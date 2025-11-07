@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scattered Glow Boxes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #2e2e2e;
+      font-family: 'Anton', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+    }
+
+    .box {
+      position: absolute;
+      border: 5px solid white;
+      padding: 30px;
+      width: fit-content;
+      max-width: 800px;
+      animation: borderGlow 6s linear infinite;
+      box-shadow:
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 40px currentColor;
+    }
+
+    h1 {
+      font-size: 3em;
+      animation: colorCycle 6s linear infinite;
+      text-shadow:
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor;
+      color: red;
+      margin: 0;
+    }
+
+    h2, h3, h4, p {
+      animation: colorCycle 6s linear infinite;
+      text-shadow:
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor;
+      color: red;
+      margin: 0;
+    }
+
+    /* Center-top and fixed */
+    #box1 {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 40px;
+    }
+
+    /* Scattered positions and sizes for other boxes */
+    #box2 {
+      top: 120px;
+      left: 60px;
+    }
+
+    #box3 {
+      bottom: 100px;
+      right: 80px;
+    }
+
+    /* Vary text sizes between 1em and 2em for scattered boxes */
+    #box2 h2, #box2 p {
+      font-size: 1.4em;
+    }
+
+    #box3 h2, #box3 p {
+      font-size: 2em;
+    }
+
+    @keyframes colorCycle {
+      0%   { color: red; }
+      14%  { color: orange; }
+      28%  { color: yellow; }
+      42%  { color: green; }
+      57%  { color: blue; }
+      71%  { color: indigo; }
+      85%  { color: violet; }
+      100% { color: red; }
+    }
+
+    @keyframes borderGlow {
+      0%   { border-color: red; box-shadow: 0 0 20px red; }
+      14%  { border-color: orange; box-shadow: 0 0 20px orange; }
+      28%  { border-color: yellow; box-shadow: 0 0 20px yellow; }
+      42%  { border-color: green; box-shadow: 0 0 20px green; }
+      57%  { border-color: blue; box-shadow: 0 0 20px blue; }
+      71%  { border-color: indigo; box-shadow: 0 0 20px indigo; }
+      85%  { border-color: violet; box-shadow: 0 0 20px violet; }
+      100% { border-color: red; box-shadow: 0 0 20px red; }
+    }
+  </style>
+</head>
+<body>
+  <div class="box" id="box1">
+    <h1>Vault Financial Services</h1>
+  </div>
+  <div class="box" id="box2">
+    <h2>Contact Info</h2>
+    <p>999-999-9999</p>
+    <p>contact@vaultfinancialservices.com</p>
+  </div>
+  <div class="box" id="box3">
+    <h2>Headquarters/Mailing Location</h2>
+    <p>1234 Main St</p>
+    <p>Vault City, VC 99999</p>
+  </div>
+  <div class="box" id="box4">
+    <a href="https://sites.google.com/view/vfsbank/login">
+      <button>Login</button>
+    </a>
+    <a href="https://sites.google.com/view/vfsbank/staff-login">
+      <button>Staff Login</button>
+    <a href="https://sites.google.com/view/vfsbank/credit-card-sign-up">
+      <button>Credit Card Sign Up</button>
+    </a>
+    <a href="https://sites.google.com/view/vfsbank/debit-card-sign-up">
+      <button>Debit Card Sign Up</button>
+    </a>
+  </div>
+</body>
+</html>
