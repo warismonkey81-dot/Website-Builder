@@ -1,133 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Scattered Glow Boxes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background-color: #2e2e2e;
-      font-family: 'Anton', sans-serif;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      position: relative;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Builder</title>
+<style>
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background:#0b1d40; color:#fff; }
+    #loginPage { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; }
+    #loginPage input { margin:10px; padding:10px; font-size:16px; border-radius:5px; border:none; }
+    #loginPage button { background:#1e3a75; color:#fff; border:none; padding:10px 15px; font-size:16px; border-radius:5px; cursor:pointer; }
+    #loginPage button:hover { background:#3650a1; }
+    #errorMsg { color:#ff5555; margin-top:10px; }
 
-    .box {
-      position: absolute;
-      border: 5px solid white;
-      padding: 30px;
-      width: fit-content;
-      max-width: 800px;
-      animation: borderGlow 6s linear infinite;
-      box-shadow:
-        0 0 10px currentColor,
-        0 0 20px currentColor,
-        0 0 40px currentColor;
-    }
+    header { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#0a1835; box-shadow:0 2px 5px rgba(0,0,0,0.5);}
+    header h1 { margin:0; font-size:24px; }
+    #loggedUser { margin-left:15px; font-size:16px; color:#c0c0ff; }
+    .buttons { display:flex; gap:10px; align-items:center; }
+    header button { background:#1e3a75; color:#fff; border:none; padding:10px 15px; font-size:16px; border-radius:5px; cursor:pointer; }
+    header button:hover { background:#3650a1; }
 
-    h1 {
-      font-size: 3em;
-      animation: colorCycle 6s linear infinite;
-      text-shadow:
-        0 0 10px currentColor,
-        0 0 20px currentColor,
-        0 0 30px currentColor;
-      color: red;
-      margin: 0;
-    }
+    main { height:calc(100vh - 70px); display:flex; flex-direction:column; }
 
-    h2, h3, h4, p {
-      animation: colorCycle 6s linear infinite;
-      text-shadow:
-        0 0 10px currentColor,
-        0 0 20px currentColor,
-        0 0 30px currentColor;
-      color: red;
-      margin: 0;
-    }
+    #builderView { display:flex; height:100%; }
+    #editor { width:50%; padding:20px; background:#0f274f; border-right:2px solid #1e3a75; display:flex; flex-direction:column; }
+    #editor textarea { flex:1; width:100%; background:#0b1d40; color:#fff; border:none; resize:none; font-family:monospace; font-size:16px; padding:10px; display:none; transition: all 0.3s ease; }
+    #preview { flex:1; padding:20px; background:#112a55; overflow:auto; }
 
-    /* Center-top and fixed */
-    #box1 {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      padding: 40px;
-    }
+    #teachersView { display:none; flex-wrap:wrap; justify-content:center; align-items:center; height:100%; overflow:auto; }
+    .number { font-size:48px; margin:10px; }
 
-    /* Scattered positions and sizes for other boxes */
-    #box2 {
-      top: 120px;
-      left: 60px;
-    }
+    #runBtn { display:none; }
 
-    #box3 {
-      bottom: 100px;
-      right: 80px;
-    }
-
-    /* Vary text sizes between 1em and 2em for scattered boxes */
-    #box2 h2, #box2 p {
-      font-size: 1.4em;
-    }
-
-    #box3 h2, #box3 p {
-      font-size: 2em;
-    }
-
-    @keyframes colorCycle {
-      0%   { color: red; }
-      14%  { color: orange; }
-      28%  { color: yellow; }
-      42%  { color: green; }
-      57%  { color: blue; }
-      71%  { color: indigo; }
-      85%  { color: violet; }
-      100% { color: red; }
-    }
-
-    @keyframes borderGlow {
-      0%   { border-color: red; box-shadow: 0 0 20px red; }
-      14%  { border-color: orange; box-shadow: 0 0 20px orange; }
-      28%  { border-color: yellow; box-shadow: 0 0 20px yellow; }
-      42%  { border-color: green; box-shadow: 0 0 20px green; }
-      57%  { border-color: blue; box-shadow: 0 0 20px blue; }
-      71%  { border-color: indigo; box-shadow: 0 0 20px indigo; }
-      85%  { border-color: violet; box-shadow: 0 0 20px violet; }
-      100% { border-color: red; box-shadow: 0 0 20px red; }
-    }
-  </style>
+    /* Add/Delete button styling */
+    #addButtonSection { margin-top:20px; display:flex; flex-wrap:wrap; gap:10px; }
+    #addButtonSection button { flex:1 1 45%; padding:8px; font-size:14px; }
+</style>
 </head>
 <body>
-  <div class="box" id="box1">
-    <h1>Vault Financial Services</h1>
-  </div>
-  <div class="box" id="box2">
-    <h2>Contact Info</h2>
-    <p>999-999-9999</p>
-    <p>contact@vaultfinancialservices.com</p>
-  </div>
-  <div class="box" id="box3">
-    <h2>Headquarters/Mailing Location</h2>
-    <p>1234 Main St</p>
-    <p>Vault City, VC 99999</p>
-  </div>
-  <div class="box" id="box4">
-    <a href="https://sites.google.com/view/vfsbank/login">
-      <button>Login</button>
-    </a>
-    <a href="https://sites.google.com/view/vfsbank/staff-login">
-      <button>Staff Login</button>
-    <a href="https://sites.google.com/view/vfsbank/credit-card-sign-up">
-      <button>Credit Card Sign Up</button>
-    </a>
-    <a href="https://sites.google.com/view/vfsbank/debit-card-sign-up">
-      <button>Debit Card Sign Up</button>
-    </a>
-  </div>
+
+<!-- Login Page -->
+<div id="loginPage">
+    <h1>Login</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <div id="errorMsg"></div>
+</div>
+
+<!-- Main Website Builder -->
+<div id="mainApp" style="display:none;">
+    <header>
+        <div style="display:flex; align-items:center;">
+            <h1>Website Builder</h1>
+            <span id="loggedUser"></span>
+        </div>
+        <div class="buttons">
+            <button id="teachersBtn">Teachers Website Builder</button>
+            <button id="advancedBtn">Advanced</button>
+            <button id="runBtn">Run</button>
+        </div>
+    </header>
+    <main>
+        <div id="builderView">
+            <div id="editor">
+                <div id="addButtonSection">
+                    <button id="addButton">Add Button</button>
+                    <button id="deleteButton">Delete Button</button>
+                    <button id="addH1">Add H1</button>
+                    <button id="deleteH1">Delete H1</button>
+                    <button id="addH2">Add H2</button>
+                    <button id="deleteH2">Delete H2</button>
+                    <button id="addH3">Add H3</button>
+                    <button id="deleteH3">Delete H3</button>
+                    <button id="addH4">Add H4</button>
+                    <button id="deleteH4">Delete H4</button>
+                    <button id="addP">Add P</button>
+                    <button id="deleteP">Delete P</button>
+                    <button id="addTable">Add Table</button>
+                    <button id="deleteTable">Delete Table</button>
+                </div>
+                <textarea id="code" placeholder="Write your HTML here..."></textarea>
+            </div>
+            <div id="preview">
+                <iframe id="output" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </div>
+
+        <div id="teachersView"></div>
+    </main>
+</div>
+
+<script>
+    // Credentials
+    const credentials = {
+        "Admin":"waah2652",
+        "teacher":"ys1jdu",
+        "number2":"ys3dau",
+        "number3":"ys3d3gu",
+        "number4":"ydau",
+        "number5":"9mdau",
+        "number6":"y534au",
+        "number7":"555dau",
+        "number9":"ys45dau",
+        "number11":"85kdau",
+        "number12":"ys3dfu",
+        "number13":"ys5dau",
+        "number14":"ys88au",
+        "number15":"856jf",
+        "number16":"erfaju",
+        "number17":"ys99au",
+        "number18":"ys67au",
+        "number19":"ys00au",
+        "number20":"ys02au",
+        "number21":"ys06dau",
+        "number22":"abddau",
+        "number23":"sdfdau"
+    };
+
+    const userWebsites = {};
+
+    // Login
+    const loginBtn = document.getElementById('loginBtn');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorMsg = document.getElementById('errorMsg');
+    const loginPage = document.getElementById('loginPage');
+    const mainApp = document.getElementById('mainApp');
+    const loggedUser = document.getElementById('loggedUser');
+
+    loginBtn.addEventListener('click',()=>{
+        const username=usernameInput.value;
+        const password=passwordInput.value;
+        if(credentials[username] && credentials[username]===password){
+            loginPage.style.display='none';
+            mainApp.style.display='block';
+            loggedUser.textContent=`Logged in as: ${username}`;
+            
+            // Load saved progress if any
+            const savedHTML = localStorage.getItem(`website_${username}`);
+            if(savedHTML){
+                outputFrame.srcdoc = savedHTML;
+                userWebsites[username] = savedHTML;
+            }
+        } else {
+            errorMsg.textContent="Incorrect username or password!";
+        }
+    });
+
+    const codeArea=document.getElementById('code');
+    const outputFrame=document.getElementById('output');
+    const builderView=document.getElementById('builderView');
+    const teachersView=document.getElementById('teachersView');
+    const teachersBtn=document.getElementById('teachersBtn');
+    const advancedBtn=document.getElementById('advancedBtn');
+    const runBtn=document.getElementById('runBtn');
+    const editorDiv=document.getElementById('editor');
+    const addButtonSection=document.getElementById('addButtonSection');
+
+    // Save progress helper
+    function saveProgress(){
+        const htmlContent = outputFrame.contentDocument.body.innerHTML;
+        const username = usernameInput.value;
+        userWebsites[username] = htmlContent;
+        localStorage.setItem(`website_${username}`, htmlContent);
+    }
+
+    // Run button
+    runBtn.addEventListener('click',()=>{
+        const userCode=codeArea.value;
+        if(userCode.includes('<67>')){
+            alert("Error 67!");
+            location.reload();
+            return;
+        }
+        outputFrame.srcdoc=userCode;
+        saveProgress();
+    });
+
+    // Advanced toggle
+    advancedBtn.addEventListener('click',()=>{
+        if(editorDiv.style.display==='none'){ editorDiv.style.display='flex'; }
+        const isAdvancedVisible=codeArea.style.display==='block';
+        if(!isAdvancedVisible){
+            codeArea.style.display='block';
+            runBtn.style.display='inline-block';
+            addButtonSection.style.display='none';
+        } else {
+            codeArea.style.display='none';
+            runBtn.style.display='none';
+            addButtonSection.style.display='flex';
+        }
+    });
+
+    const outputDoc = () => outputFrame.contentDocument || outputFrame.contentWindow.document;
+
+    // Helper functions to add/delete elements
+    function addElement(tag){
+        const text = prompt(`Type the text for ${tag}:`);
+        if(text){
+            const el = document.createElement(tag);
+            el.textContent = text;
+            outputDoc().body.appendChild(el);
+            saveProgress();
+        }
+    }
+    function deleteElement(tag){
+        const text = prompt(`Type the text of the ${tag} you want to delete:`);
+        if(text){
+            const elements = outputDoc().querySelectorAll(tag);
+            for(let el of elements){
+                if(el.textContent === text){
+                    el.remove();
+                    break;
+                }
+            }
+            saveProgress();
+        }
+    }
+
+    // Add/Delete Buttons
+    document.getElementById('addButton').addEventListener('click', ()=>addElement('button'));
+    document.getElementById('deleteButton').addEventListener('click', ()=>deleteElement('button'));
+
+    // Add/Delete H1-H4 and P
+    document.getElementById('addH1').addEventListener('click', ()=>addElement('h1'));
+    document.getElementById('deleteH1').addEventListener('click', ()=>deleteElement('h1'));
+    document.getElementById('addH2').addEventListener('click', ()=>addElement('h2'));
+    document.getElementById('deleteH2').addEventListener('click', ()=>deleteElement('h2'));
+    document.getElementById('addH3').addEventListener('click', ()=>addElement('h3'));
+    document.getElementById('deleteH3').addEventListener('click', ()=>deleteElement('h3'));
+    document.getElementById('addH4').addEventListener('click', ()=>addElement('h4'));
+    document.getElementById('deleteH4').addEventListener('click', ()=>deleteElement('h4'));
+    document.getElementById('addP').addEventListener('click', ()=>addElement('p'));
+    document.getElementById('deleteP').addEventListener('click', ()=>deleteElement('p'));
+
+    // Add Table
+    document.getElementById('addTable').addEventListener('click', ()=>{
+        const rows = parseInt(prompt("Number of rows for table:"), 10);
+        const cols = parseInt(prompt("Number of columns for table:"), 10);
+        if(isNaN(rows) || isNaN(cols) || rows<1 || cols<1) return;
+
+        const table = document.createElement('table');
+        table.style.borderCollapse = 'collapse';
+        table.style.marginTop = '10px';
+
+        for(let r=0; r<rows; r++){
+            const tr = document.createElement('tr');
+            for(let c=0; c<cols; c++){
+                const td = document.createElement('td');
+                td.textContent = `Cell ${r+1},${c+1}`;
+                td.style.border = "1px solid #fff";
+                td.style.padding = "5px 10px";
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+
+        outputDoc().body.appendChild(table);
+        saveProgress();
+    });
+
+    // Delete Table
+    document.getElementById('deleteTable').addEventListener('click', ()=>{
+        const tableText = prompt("Type any text from the table to delete (first matching table will be removed):");
+        if(!tableText) return;
+
+        const tables = outputDoc().querySelectorAll('table');
+        for(let tbl of tables){
+            if(tbl.textContent.includes(tableText)){
+                tbl.remove();
+                break;
+            }
+        }
+        saveProgress();
+    });
+
+    // Teachers view
+    for(let i=0;i<100;i++){
+        const div=document.createElement('div');
+        div.classList.add('number');
+        div.textContent='67';
+        teachersView.appendChild(div);
+    }
+
+    let inTeachersView=false;
+    teachersBtn.addEventListener('click',()=>{
+        inTeachersView=!inTeachersView;
+        if(inTeachersView){
+            builderView.style.display='none';
+            teachersView.style.display='flex';
+        } else {
+            teachersView.style.display='none';
+            builderView.style.display='flex';
+        }
+    });
+</script>
 </body>
 </html>
